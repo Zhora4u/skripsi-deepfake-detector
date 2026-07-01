@@ -92,21 +92,49 @@ export default function AnalysisPanel({ mediaDataUrl, mediaType, mediaName, onSc
     }
   }, [mediaName, mlResult])
 
+  const resizeImage = useCallback((dataUrl: string, maxDim = 1024): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = () => {
+        let { width, height } = img
+        if (width <= maxDim && height <= maxDim) {
+          resolve(dataUrl)
+          return
+        }
+        if (width > height) { height = Math.round((height / width) * maxDim); width = maxDim }
+        else { width = Math.round((width / height) * maxDim); height = maxDim }
+        const canvas = document.createElement('canvas')
+        canvas.width = width; canvas.height = height
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0, width, height)
+        resolve(canvas.toDataURL('image/jpeg', 0.85))
+      }
+      img.onerror = () => reject(new Error('Gagal memuat gambar'))
+      img.src = dataUrl
+    })
+  }, [])
+
   const fetchExplanation = useCallback(async (dataUrl: string): Promise<MLResult | null> => {
     const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
+    const resized = await resizeImage(dataUrl, 1024)
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 60000)
     try {
       const res = await fetch(`${FLASK_URL}/explain`, {
         method: 'POST',
-        body: JSON.stringify({ image: dataUrl }),
+        body: JSON.stringify({ image: resized }),
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
       })
+      clearTimeout(timeoutId)
       if (!res.ok) return null
       const data = await res.json()
       return data as MLResult
     } catch {
+      clearTimeout(timeoutId)
       return null
     }
-  }, [])
+  }, [resizeImage])
 
   const handleAnalyze = async () => {
     console.log('[Analyze] clicked, mediaType:', mediaType, 'dataUrl length:', mediaDataUrl?.length)

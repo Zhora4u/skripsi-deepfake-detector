@@ -281,7 +281,7 @@ def compute_gradcam(model, img_array, original_img):
     blended = (np.clip(blended, 0, 1) * 255).astype(np.uint8)
 
     buffered = io.BytesIO()
-    Image.fromarray(blended).save(buffered, format='PNG')
+    Image.fromarray(blended).save(buffered, format='JPEG', quality=90)
     heatmap_b64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
 
     # ── Region importance breakdown ──────────────────────────
@@ -351,7 +351,7 @@ def compute_gradcam(model, img_array, original_img):
     pred_val = predictions.numpy()
 
     return {
-        'heatmap_url': f'data:image/png;base64,{heatmap_b64}',
+        'heatmap_url': f'data:image/jpeg;base64,{heatmap_b64}',
         'baseline_score': round(float(pred_val[0][0]), 4),
         'regions': regions,
         'elapsed': elapsed,
