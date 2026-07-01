@@ -24,7 +24,6 @@ services:
     restart: always
     ports:
       - "3000:3000"
-      - "5001:5001"
     environment:
       NEXT_PUBLIC_FLASK_API_URL: http://localhost:5001
       MYSQL_HOST: mysql
