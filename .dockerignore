@@ -1,0 +1,17 @@
+.next
+.npm-cache
+.git
+.env*
+node_modules
+*.tsbuildinfo
+npm-debug.log*
+*.md
+docs/
+styles/
+public/placeholder*
+output/
+split_dataset/
+*.pyc
+__pycache__
+flask_api/venv
+flask_api/__pycache__

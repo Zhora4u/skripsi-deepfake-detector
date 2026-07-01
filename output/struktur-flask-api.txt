@@ -1,0 +1,14 @@
+flask_api/
+│
+├── app.py                              # Flask Application (687 baris)
+├── xception_final.keras                # Model Deep Learning XceptionNet (.keras)
+├── requirements.txt                    # Python dependencies
+├── Dockerfile                          # Docker build instructions
+├── start.sh                            # Container startup script
+├── validate_model.py                   # Validasi arsitektur model
+├── retrain.py                          # Script retraining model
+├── retrain_fast.py                     # Retrain model (fast mode)
+├── data_pipeline.py                    # Data preprocessing pipeline
+├── test_api.py                         # Unit test untuk API
+├── test_full.py                        # Full integration test
+└── venv/                               # Virtual environment (local dev)

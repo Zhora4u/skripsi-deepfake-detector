@@ -1,0 +1,22 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #1e3a5f; }
+      .fg { fill: #f0ebe3; }
+      .acc { fill: #c9a84c; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #f0ebe3; }
+      .fg { fill: #1e3a5f; }
+      .acc { fill: #c9a84c; }
+    }
+  </style>
+  <rect class="bg" width="180" height="180" rx="37" />
+  <!-- Shield shape -->
+  <path class="fg" d="M90 30L135 50V95C135 125 115 150 90 160C65 150 45 125 45 95V50L90 30Z" />
+  <!-- D checkmark inside shield -->
+  <path class="acc" d="M75 95L85 108L108 75" stroke="#c9a84c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Small scan lines -->
+  <path class="fg" d="M65 82H115" stroke="#f0ebe3" stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+  <path class="fg" d="M65 92H115" stroke="#f0ebe3" stroke-width="3" stroke-linecap="round" opacity="0.15"/>
+</svg>

@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: deepfake_detector
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+      TZ: Asia/Jakarta
+    command: --default-time-zone='+07:00'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    restart: always
+    ports:
+      - "3000:3000"
+      - "5001:5001"
+    environment:
+      NEXT_PUBLIC_FLASK_API_URL: http://localhost:5001
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+      MYSQL_DATABASE: deepfake_detector
+      TZ: Asia/Jakarta
+    volumes:
+      - ./flask_api/xception_final.keras:/app/flask_api/xception_final.keras
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
