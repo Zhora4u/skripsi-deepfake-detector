@@ -12,7 +12,7 @@ export default function Header() {
             <div className="rounded-xl bg-gradient-to-br from-primary to-primary/80 p-2 shadow-sm shadow-primary/20 transition-transform group-hover:scale-105">
               <svg width="22" height="22" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M90 30L135 50V95C135 125 115 150 90 160C65 150 45 125 45 95V50L90 30Z" fill="currentColor" className="text-primary-foreground" />
-                <path d="M75 95L85 108L108 75" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" className="text-[#c9a84c] opacity-90" />
+                <path d="M75 95L85 108L108 75" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" fill="none" className="text-[#c9a84c] opacity-90" />
               </svg>
             </div>
             <div>

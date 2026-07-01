@@ -24,6 +24,23 @@ export default function Home() {
     }
   }, [mediaPreview])
 
+  const checkVideoDuration = useCallback((file: File): Promise<number> => {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file)
+      const video = document.createElement('video')
+      video.preload = 'metadata'
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(url)
+        resolve(video.duration)
+      }
+      video.onerror = () => {
+        URL.revokeObjectURL(url)
+        reject(new Error('Gagal membaca metadata video'))
+      }
+      video.src = url
+    })
+  }, [])
+
   const readFileAsDataURL = useCallback((file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -33,16 +50,28 @@ export default function Home() {
     })
   }, [])
 
-  const handleFileSelect = async (file: File) => {
+  const handleFileSelect = async (file: File): Promise<boolean> => {
     try {
       const isImage = file.type.startsWith('image/')
       const isVideo = file.type.startsWith('video/')
+
+      if (isVideo) {
+        const duration = await checkVideoDuration(file)
+        if (duration > 60) {
+          handleInvalidFile(`Video maksimal 1 menit. Video Anda ${Math.round(duration)} detik.`)
+          return false
+        }
+      }
+
       const dataUrl = await readFileAsDataURL(file)
       setMediaPreview(dataUrl)
       setMediaName(file.name)
       setMediaType(isVideo ? 'video' : isImage ? 'image' : 'file')
+      return true
     } catch (err) {
       console.error('[Upload Error]', err)
+      handleInvalidFile('Gagal memproses file')
+      return false
     }
   }
 

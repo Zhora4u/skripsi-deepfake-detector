@@ -5,7 +5,7 @@ import { Upload, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface UploadSectionProps {
-  onFileSelect: (file: File) => void
+  onFileSelect: (file: File) => Promise<boolean>
   onInvalidFile: (msg?: string) => void
 }
 
@@ -26,22 +26,22 @@ export default function UploadSection({
     }
   }
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0]
-      onFileSelect(file)
-      setFileName(file.name)
+      const accepted = await onFileSelect(file)
+      if (accepted) setFileName(file.name)
     }
   }
 
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
-      onFileSelect(file)
-      setFileName(file.name)
+      const accepted = await onFileSelect(file)
+      if (accepted) setFileName(file.name)
     }
   }
 
