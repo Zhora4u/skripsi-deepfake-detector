@@ -118,7 +118,7 @@ export default function AnalysisPanel({ mediaDataUrl, mediaType, mediaName, onSc
     const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
     const resized = await resizeImage(dataUrl, 1024)
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 60000)
+    const timeoutId = setTimeout(() => controller.abort(), 120000)
     try {
       const res = await fetch(`${FLASK_URL}/explain`, {
         method: 'POST',

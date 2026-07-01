@@ -221,6 +221,16 @@ def compute_gradcam(model, img_array, original_img):
     import time
     t0 = time.time()
 
+    # Resize original untuk overlay agar Grad-CAM cepat (max 1024px)
+    MAX_OVERLAY = 1024
+    ow, oh = original_img.size
+    if ow > MAX_OVERLAY or oh > MAX_OVERLAY:
+        if ow > oh:
+            oh = int((oh / ow) * MAX_OVERLAY); ow = MAX_OVERLAY
+        else:
+            ow = int((ow / oh) * MAX_OVERLAY); oh = MAX_OVERLAY
+        original_img = original_img.resize((ow, oh), Image.BILINEAR)
+
     orig_np = np.array(original_img.convert('RGB'))
     orig_w, orig_h = original_img.size
 
