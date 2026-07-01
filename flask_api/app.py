@@ -5,6 +5,11 @@ import time
 os.environ['TZ'] = 'Asia/Jakarta'
 time.tzset()
 
+# Batasi thread TensorFlow agar tidak overload CPU/RAM
+os.environ["OMP_NUM_THREADS"] = "2"
+os.environ["TF_NUM_INTEROP_THREADS"] = "2"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "2"
+
 import csv
 from io import StringIO
 from flask import Flask, request, jsonify, Response
