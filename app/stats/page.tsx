@@ -24,7 +24,7 @@ export default function StatsPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5001'
+    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
     fetch(`${FLASK_URL}/feedback-stats`)
       .then((r) => r.json())
       .then((d) => {

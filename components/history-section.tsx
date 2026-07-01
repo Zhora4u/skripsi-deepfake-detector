@@ -28,7 +28,7 @@ export default function HistorySection() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5001'
+    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
     setLoading(true)
     setError(null)
     fetch(`${FLASK_URL}/history`)
@@ -47,7 +47,7 @@ export default function HistorySection() {
   }, [])
 
   const handleDownload = () => {
-    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5001'
+    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
     window.open(`${FLASK_URL}/history/download`, '_blank')
   }
 

@@ -46,7 +46,7 @@ export default function AnalysisPanel({ mediaDataUrl, mediaType, mediaName, onSc
   const cancelledRef = useRef(false)
 
   const sendToApi = useCallback(async (dataUrl: string, save?: boolean): Promise<MLResult> => {
-    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5001'
+    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 60000)
     try {
@@ -72,7 +72,7 @@ export default function AnalysisPanel({ mediaDataUrl, mediaType, mediaName, onSc
 
   const sendFeedback = useCallback(async (correct: boolean) => {
     setFeedbackSaving(true)
-    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5001'
+    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
     try {
       await fetch(`${FLASK_URL}/feedback`, {
         method: 'POST',
@@ -93,7 +93,7 @@ export default function AnalysisPanel({ mediaDataUrl, mediaType, mediaName, onSc
   }, [mediaName, mlResult])
 
   const fetchExplanation = useCallback(async (dataUrl: string): Promise<MLResult | null> => {
-    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || 'http://localhost:5001'
+    const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
     try {
       const res = await fetch(`${FLASK_URL}/explain`, {
         method: 'POST',
