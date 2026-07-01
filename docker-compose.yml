@@ -5,10 +5,10 @@ services:
     ports:
       - "3307:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: 2503xeWsINRcztLm
       MYSQL_DATABASE: deepfake_detector
       MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppassword
+      MYSQL_PASSWORD: dmjuRNeMFYw63XTv
       TZ: Asia/Jakarta
     command: --default-time-zone='+07:00'
     volumes:
@@ -29,7 +29,7 @@ services:
       MYSQL_HOST: mysql
       MYSQL_PORT: "3306"
       MYSQL_USER: appuser
-      MYSQL_PASSWORD: apppassword
+      MYSQL_PASSWORD: dmjuRNeMFYw63XTv
       MYSQL_DATABASE: deepfake_detector
       TZ: Asia/Jakarta
     volumes:
