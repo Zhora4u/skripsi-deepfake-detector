@@ -668,10 +668,17 @@ def feedback_stats():
         cursor.execute("SELECT COUNT(*) as total FROM feedback WHERE correct = FALSE")
         total_incorrect = cursor.fetchone()['total']
 
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        if page < 1: page = 1
+        if per_page < 1: per_page = 10
+        offset = (page - 1) * per_page
+        total_pages = max(1, (total_feedback + per_page - 1) // per_page)
+
         cursor.execute("""
             SELECT id, filename, prediction, confidence, correct, created_at
-            FROM feedback ORDER BY created_at DESC
-        """)
+            FROM feedback ORDER BY created_at DESC LIMIT %s OFFSET %s
+        """, (per_page, offset))
         rows = cursor.fetchall()
         for row in rows:
             if isinstance(row.get('created_at'), datetime):
@@ -684,6 +691,9 @@ def feedback_stats():
             'total_correct': total_correct,
             'total_incorrect': total_incorrect,
             'feedback': rows,
+            'page': page,
+            'per_page': per_page,
+            'total_pages': total_pages,
         })
     except MySQLError as e:
         return jsonify({'error': str(e)}), 500

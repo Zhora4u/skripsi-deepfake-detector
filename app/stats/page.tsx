@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface FeedbackRow {
   id: number
@@ -17,22 +18,28 @@ interface StatsData {
   total_correct: number
   total_incorrect: number
   feedback: FeedbackRow[]
+  page: number
+  per_page: number
+  total_pages: number
 }
 
 export default function StatsPage() {
   const [data, setData] = useState<StatsData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
+  const perPage = 10
 
   useEffect(() => {
+    setData(null)
     const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL || '/api'
-    fetch(`${FLASK_URL}/feedback-stats`)
+    fetch(`${FLASK_URL}/feedback-stats?page=${page}&per_page=${perPage}`)
       .then((r) => r.json())
       .then((d) => {
         if (d.error) setError(d.error)
         else setData(d)
       })
       .catch(() => setError('Gagal memuat statistik'))
-  }, [])
+  }, [page])
 
   if (error) {
     return (
@@ -112,7 +119,7 @@ export default function StatsPage() {
                 ) : (
                   data.feedback.map((row, i) => (
                     <tr key={row.id} className="border-b border-border/30 hover:bg-muted/15 transition-colors">
-                      <td className="p-3 text-muted-foreground/70">{i + 1}</td>
+                      <td className="p-3 text-muted-foreground/70">{(page - 1) * perPage + i + 1}</td>
                       <td className="p-3 text-foreground">{row.filename || '-'}</td>
                       <td className="p-3">
                         <span className={row.prediction === 'FAKE' ? 'text-rose-600 font-semibold' : 'text-emerald-600 font-semibold'}>
@@ -132,6 +139,49 @@ export default function StatsPage() {
               </tbody>
             </table>
           </div>
+
+          {data.total_pages > 1 && (
+            <div className="flex items-center justify-between border-t border-border/40 bg-muted/10 px-4 py-3">
+              <p className="text-xs text-muted-foreground/60">
+                Halaman {page} dari {data.total_pages}
+              </p>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="rounded-lg border border-border/60 p-1.5 text-muted-foreground hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                {Array.from({ length: data.total_pages }, (_, i) => i + 1)
+                  .filter((p) => p === 1 || p === data.total_pages || Math.abs(p - page) <= 1)
+                  .map((p, idx, arr) => (
+                    <span key={p} className="flex items-center">
+                      {idx > 0 && arr[idx - 1] !== p - 1 && (
+                        <span className="px-1 text-xs text-muted-foreground/40">...</span>
+                      )}
+                      <button
+                        onClick={() => setPage(p)}
+                        className={`min-w-[32px] rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors ${
+                          p === page
+                            ? 'border-primary bg-primary text-primary-foreground'
+                            : 'border-border/60 text-muted-foreground hover:bg-card'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    </span>
+                  ))}
+                <button
+                  onClick={() => setPage((p) => Math.min(data.total_pages, p + 1))}
+                  disabled={page >= data.total_pages}
+                  className="rounded-lg border border-border/60 p-1.5 text-muted-foreground hover:bg-card disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
